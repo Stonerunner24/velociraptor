@@ -1,6 +1,6 @@
 import os
 from typing import List, Optional
-import openai
+import anthropic
 from dotenv import load_dotenv
 
 from ..models import DocumentNode, DocumentTree
@@ -8,9 +8,9 @@ from ..models import DocumentNode, DocumentTree
 load_dotenv()
 
 class DocumentSummarizer:
-    def __init__(self, api_key: Optional[str] = None, model: str = "gpt-3.5-turbo"):
-        self.client = openai.OpenAI(
-            api_key=api_key or os.getenv("OPENAI_API_KEY")
+    def __init__(self, api_key: Optional[str] = None, model: str = "claude-3-haiku-20240307"):
+        self.client = anthropic.Anthropic(
+            api_key=api_key or os.getenv("ANTHROPIC_API_KEY")
         )
         self.model = model
     
@@ -29,17 +29,17 @@ Content:
 Summary:"""
         
         try:
-            response = self.client.chat.completions.create(
+            response = self.client.messages.create(
                 model=self.model,
-                messages=[
-                    {"role": "system", "content": "You are a helpful assistant that creates concise, informative summaries of document content."},
-                    {"role": "user", "content": prompt}
-                ],
                 max_tokens=300,
-                temperature=0.3
+                temperature=0.3,
+                system="You are a helpful assistant that creates concise, informative summaries of document content.",
+                messages=[
+                    {"role": "user", "content": prompt}
+                ]
             )
             
-            return response.choices[0].message.content.strip()
+            return response.content[0].text.strip()
         
         except Exception as e:
             print(f"Error generating summary: {e}")
@@ -62,17 +62,17 @@ Section summaries:
 Synthesized summary:"""
         
         try:
-            response = self.client.chat.completions.create(
+            response = self.client.messages.create(
                 model=self.model,
-                messages=[
-                    {"role": "system", "content": "You are a helpful assistant that creates cohesive summaries by synthesizing information from multiple sections."},
-                    {"role": "user", "content": prompt}
-                ],
                 max_tokens=400,
-                temperature=0.3
+                temperature=0.3,
+                system="You are a helpful assistant that creates cohesive summaries by synthesizing information from multiple sections.",
+                messages=[
+                    {"role": "user", "content": prompt}
+                ]
             )
             
-            return response.choices[0].message.content.strip()
+            return response.content[0].text.strip()
         
         except Exception as e:
             print(f"Error generating summary from child summaries: {e}")

@@ -1,7 +1,7 @@
 import os
 from typing import List, Optional
-import openai
 import numpy as np
+from sentence_transformers import SentenceTransformer
 from dotenv import load_dotenv
 
 from ..models import DocumentNode, DocumentTree
@@ -9,12 +9,9 @@ from ..models import DocumentNode, DocumentTree
 load_dotenv()
 
 class EmbeddingGenerator:
-    def __init__(self, api_key: Optional[str] = None, model: str = "text-embedding-ada-002"):
-        self.client = openai.OpenAI(
-            api_key=api_key or os.getenv("OPENAI_API_KEY")
-        )
-        self.model = model
-        self.embedding_dimension = 1536  # Default for ada-002
+    def __init__(self, model: str = "all-MiniLM-L6-v2"):
+        self.model = SentenceTransformer(model)
+        self.embedding_dimension = self.model.get_sentence_embedding_dimension()
     
     def generate_embedding(self, text: str) -> Optional[List[float]]:
         """Generate embedding for the given text"""
@@ -22,12 +19,8 @@ class EmbeddingGenerator:
             return None
         
         try:
-            response = self.client.embeddings.create(
-                model=self.model,
-                input=text
-            )
-            
-            return response.data[0].embedding
+            embedding = self.model.encode(text)
+            return embedding.tolist()
         
         except Exception as e:
             print(f"Error generating embedding: {e}")

@@ -19,7 +19,7 @@ class Velociraptor:
     """Main class for the Velociraptor document processing system"""
     
     def __init__(self, 
-                 openai_api_key: Optional[str] = None,
+                 anthropic_api_key: Optional[str] = None,
                  neo4j_uri: Optional[str] = None,
                  neo4j_username: Optional[str] = None, 
                  neo4j_password: Optional[str] = None,
@@ -28,7 +28,7 @@ class Velociraptor:
         Initialize Velociraptor with configuration
         
         Args:
-            openai_api_key: OpenAI API key for AI operations
+            anthropic_api_key: Anthropic API key for AI operations
             neo4j_uri: Neo4j database URI
             neo4j_username: Neo4j username
             neo4j_password: Neo4j password
@@ -36,8 +36,8 @@ class Velociraptor:
         """
         # Initialize components
         self.splitter = DocumentSplitter(max_chunk_size=max_chunk_size)
-        self.summarizer = DocumentSummarizer(api_key=openai_api_key)
-        self.embedding_generator = EmbeddingGenerator(api_key=openai_api_key)
+        self.summarizer = DocumentSummarizer(api_key=anthropic_api_key)
+        self.embedding_generator = EmbeddingGenerator()
         self.db_connector = Neo4jConnector(neo4j_uri, neo4j_username, neo4j_password)
         self.search_engine = SemanticSearchEngine(self.embedding_generator, self.db_connector)
         self.navigator = TreeNavigator(self.db_connector)

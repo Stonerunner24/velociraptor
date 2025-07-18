@@ -5,7 +5,7 @@ A tree-based approach for processing documents in Enterprise RAG systems. Veloci
 ## Features
 
 - **Hierarchical Document Processing**: Recursively splits large documents into manageable tree structures
-- **AI-Powered Summaries**: Generates summaries at each level of the tree using OpenAI
+- **AI-Powered Summaries**: Generates summaries at each level of the tree using Anthropic Claude
 - **Semantic Search**: Uses embeddings for similarity-based content discovery
 - **Graph Database Storage**: Stores document trees in Neo4j for efficient querying
 - **Intelligent Navigation**: Navigate through document structure with parent/child/sibling relationships
@@ -45,7 +45,7 @@ cp .env.example .env
 ```
 
 Required environment variables:
-- `OPENAI_API_KEY`: Your OpenAI API key
+- `ANTHROPIC_API_KEY`: Your Anthropic API key
 - `NEO4J_URI`: Neo4j database URI (e.g., bolt://localhost:7687)
 - `NEO4J_USERNAME`: Neo4j username
 - `NEO4J_PASSWORD`: Neo4j password
@@ -79,9 +79,9 @@ with Velociraptor() as raptor:
 - **Configurable Chunking**: Set chunk size (pages per chunk) based on your needs
 
 ### 2. AI Enhancement
-- **Leaf Summaries**: AI generates summaries from full text at leaf nodes
+- **Leaf Summaries**: Claude generates summaries from full text at leaf nodes
 - **Hierarchical Summaries**: Parent nodes contain summaries of their children's summaries
-- **Embeddings**: Generated for leaf nodes to enable semantic search
+- **Embeddings**: Generated using sentence-transformers for semantic search
 
 ### 3. Graph Storage
 - **Neo4j Integration**: Stores the entire tree structure in a graph database
@@ -99,7 +99,7 @@ with Velociraptor() as raptor:
 
 ```python
 raptor = Velociraptor(
-    openai_api_key="your-key",
+    anthropic_api_key="your-key",
     neo4j_uri="bolt://localhost:7687",
     neo4j_username="neo4j", 
     neo4j_password="password",
@@ -167,7 +167,7 @@ results = raptor.search(
 ### Common Issues
 
 1. **Neo4j Connection Error**: Ensure Neo4j is running and credentials are correct
-2. **OpenAI API Error**: Check API key and rate limits
+2. **Anthropic API Error**: Check API key and rate limits
 3. **PDF Processing Error**: Ensure PDF is readable and not password-protected
 4. **Memory Issues**: Reduce chunk size or process documents in batches
 

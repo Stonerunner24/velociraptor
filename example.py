@@ -16,7 +16,7 @@ def main():
         print("\n=== Processing Document ===")
         try:
             # Replace with actual PDF path
-            pdf_path = "example_document.pdf"
+            pdf_path = "../Core Banking 3.3 User Guide.pdf"
             document_id = raptor.process_document(pdf_path, "Example Document")
             print(f"Document processed with ID: {document_id}")
             
@@ -46,9 +46,9 @@ def main():
         # Example 3: Search for content
         print("\n=== Semantic Search ===")
         search_queries = [
-            "artificial intelligence",
-            "machine learning algorithms", 
-            "data processing",
+            "deposits",
+            "withdrawals", 
+            "creating accounts",
             "security measures"
         ]
         
