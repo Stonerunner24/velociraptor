@@ -59,6 +59,8 @@ class Velociraptor:
         if not os.path.exists(pdf_path):
             raise FileNotFoundError(f"PDF file not found: {pdf_path}")
         
+        print(pdf_path)
+        
         # Extract title from filename if not provided
         if not document_title:
             document_title = Path(pdf_path).stem

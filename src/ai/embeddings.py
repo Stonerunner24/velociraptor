@@ -10,8 +10,18 @@ load_dotenv()
 
 class EmbeddingGenerator:
     def __init__(self, model: str = "all-MiniLM-L6-v2"):
-        self.model = SentenceTransformer(model)
-        self.embedding_dimension = self.model.get_sentence_embedding_dimension()
+        self.model_name = model
+        self._model = None
+        self.embedding_dimension = 384  # Default for all-MiniLM-L6-v2
+    
+    @property
+    def model(self):
+        """Lazy load the model only when needed"""
+        if self._model is None:
+            print(f"Loading embedding model: {self.model_name}")
+            self._model = SentenceTransformer(self.model_name, device='cpu')
+            self.embedding_dimension = self._model.get_sentence_embedding_dimension()
+        return self._model
     
     def generate_embedding(self, text: str) -> Optional[List[float]]:
         """Generate embedding for the given text"""

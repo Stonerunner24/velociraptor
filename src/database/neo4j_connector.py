@@ -89,6 +89,11 @@ class Neo4jConnector:
     
     def _store_node_query(self, session, node: DocumentNode):
         """Internal method to execute node storage query"""
+        import json
+        
+        # Convert metadata dict to JSON string for Neo4j storage
+        metadata_json = json.dumps(node.metadata) if node.metadata else "{}"
+        
         session.run("""
             MERGE (n:DocumentNode {id: $id})
             SET n.content = $content,
@@ -115,7 +120,7 @@ class Neo4jConnector:
             level=node.level,
             page_start=node.page_start,
             page_end=node.page_end,
-            metadata=node.metadata
+            metadata=metadata_json
         )
     
     def get_document_tree(self, document_id: str) -> Optional[DocumentTree]:

@@ -20,14 +20,23 @@ class DocumentSplitter:
         
         with open(pdf_path, 'rb') as file:
             pdf_reader = PyPDF2.PdfReader(file)
+            total_pages = len(pdf_reader.pages)
+            print(f"PDF has {total_pages} pages")
             
             for page_num, page in enumerate(pdf_reader.pages):
-                text = page.extract_text()
-                pages.append({
-                    'page_number': page_num + 1,
-                    'text': text,
-                    'char_count': len(text)
-                })
+                if page_num % 50 == 0:  # Progress update every 50 pages
+                    print(f"Processing page {page_num + 1}/{total_pages}")
+                
+                try:
+                    text = page.extract_text()
+                    pages.append({
+                        'page_number': page_num + 1,
+                        'text': text,
+                        'char_count': len(text)
+                    })
+                except Exception as e:
+                    print(f"Warning: Failed to extract text from page {page_num + 1}: {e}")
+                    continue
         
         return pages
     
@@ -42,6 +51,7 @@ class DocumentSplitter:
         i = 0
         while i < total_pages:
             chunk_end = min(i + self.max_chunk_size, total_pages)
+            print(f"chunk {i}: pages {i+1}-{chunk_end} (max_chunk_size: {self.max_chunk_size})")
             
             # Collect pages for this chunk
             chunk_pages = pages[i:chunk_end]
@@ -60,7 +70,7 @@ class DocumentSplitter:
             chunks.append(chunk)
             
             # Move to next chunk with overlap consideration
-            i = chunk_end - self.overlap_pages if self.overlap_pages > 0 else chunk_end
+            i = max(i + 1, chunk_end - self.overlap_pages) if self.overlap_pages > 0 else chunk_end
         
         return chunks
     
@@ -193,11 +203,15 @@ class DocumentSplitter:
         if not pages:
             return DocumentTree(document_id, document_title)
         
+        print("splitting pages")
         # Split pages into chunks
         chunks = self.split_pages_into_chunks(pages)
         
+        print("Creating nodes")
         # Create leaf nodes
         leaf_nodes = self.create_leaf_nodes(chunks, document_id)
+
+        print("Building tree")
         
         # Build tree structure
         tree = self.build_tree_structure(leaf_nodes, document_id)
