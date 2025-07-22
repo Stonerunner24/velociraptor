@@ -12,7 +12,7 @@ class SemanticSearchEngine:
     def search(self, query: str, 
                document_id: Optional[str] = None,
                top_k: int = 5,
-               threshold: float = 0.7) -> List[Dict[str, Any]]:
+               threshold: float = 0.3) -> List[Dict[str, Any]]:
         """
         Search for nodes semantically similar to the query
         
@@ -50,7 +50,7 @@ class SemanticSearchEngine:
         return filtered_results[:top_k]
     
     def search_in_tree(self, query: str, tree: DocumentTree,
-                      top_k: int = 5, threshold: float = 0.7) -> List[Dict[str, Any]]:
+                      top_k: int = 5, threshold: float = 0.3) -> List[Dict[str, Any]]:
         """
         Search within a specific document tree (in-memory)
         

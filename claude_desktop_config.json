@@ -1,4 +1,8 @@
 {
+  "appearance": {
+    "theme": "dark",
+    "scale": 1.0
+  },
   "mcpServers": {
     "velociraptor": {
       "command": "python3",
